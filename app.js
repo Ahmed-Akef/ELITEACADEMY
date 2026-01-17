@@ -369,31 +369,44 @@ const quiz = {
     },
     render: (qIdx) => {
         const q = state.activeQuiz.questions[qIdx];
+        if (!q) return;
+
+        // Filter valid options (remove empty ones)
+        const validOptions = q.a.filter(opt => opt && opt.trim() !== '');
+
         document.getElementById('modal-body').innerHTML = `
             <div class="quiz-container">
-                <p style="color:var(--primary); font-weight:800; margin-bottom:10px;">Question ${qIdx + 1} of ${state.activeQuiz.questions.length}</p>
+                <p style="color:var(--primary); font-weight:800; margin-bottom:15px; font-size:0.9rem; letter-spacing:1px; text-transform:uppercase;">
+                    Question ${qIdx + 1} of ${state.activeQuiz.questions.length}
+                </p>
                 
                 ${q.passage ? `<div class="quiz-passage">${q.passage}</div>` : ''}
                 
                 ${q.image ? `
                     <div style="margin-bottom:30px; text-align:center; background:rgba(0,0,0,0.3); border-radius:20px; padding:15px; border:1px solid rgba(255,255,255,0.05); box-shadow:0 10px 40px rgba(0,0,0,0.4);">
-                        <img src="${formatDriveImage(q.image)}" style="max-width:100%; max-height:500px; border-radius:15px; display:block; margin:0 auto; object-fit:contain;" alt="Question Image">
+                        <img src="${formatDriveImage(q.image)}" style="max-width:100%; max-height:400px; border-radius:15px; display:block; margin:0 auto; object-fit:contain;" alt="Question Image">
                     </div>
                 ` : ''}
 
-                <h3 class="quiz-q" style="line-height:1.4; margin-bottom:35px;">${q.q}</h3>
+                <h3 class="quiz-q" style="margin-bottom:30px;">${q.q}</h3>
+                
                 <div class="quiz-options">
-                    ${q.a.map((opt, i) => `
-                        <div class="quiz-opt ${state.quizAnswers[qIdx] === i ? 'selected' : ''}" onclick="quiz.select(${qIdx}, ${i})" style="margin-bottom:12px;">
-                            ${opt}
-                        </div>
-                    `).join('')}
+                    ${validOptions.map((opt, i) => {
+            const originalIndex = q.a.indexOf(opt);
+            return `
+                            <div class="quiz-opt ${state.quizAnswers[qIdx] === originalIndex ? 'selected' : ''}" 
+                                 onclick="quiz.select(${qIdx}, ${originalIndex})">
+                                ${opt}
+                            </div>
+                        `;
+        }).join('')}
                 </div>
-                <div style="margin-top:30px; display:flex; justify-content:space-between;">
-                    ${qIdx > 0 ? `<button class="btn btn-outline" onclick="quiz.render(${qIdx - 1})">Previous</button>` : '<div></div>'}
+
+                <div style="margin-top:40px; display:flex; justify-content:space-between; gap:20px; border-top:1px solid rgba(255,255,255,0.05); padding-top:30px;">
+                    ${qIdx > 0 ? `<button class="btn btn-outline" onclick="quiz.render(${qIdx - 1})" style="flex:1;">Previous</button>` : '<div style="flex:1;"></div>'}
                     ${qIdx < state.activeQuiz.questions.length - 1 ?
-                `<button class="btn btn-primary" onclick="quiz.render(${qIdx + 1})">Next Question</button>` :
-                `<button class="btn btn-primary" onclick="quiz.submit()">Submit Final Exam</button>`
+                `<button class="btn btn-primary" onclick="quiz.render(${qIdx + 1})" style="flex:1;">Next Question</button>` :
+                `<button class="btn btn-primary" onclick="quiz.submit()" style="flex:1; background:var(--accent);">Submit Final Exam</button>`
             }
                 </div>
             </div>
