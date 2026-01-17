@@ -3,30 +3,75 @@
  */
 
 const db = {
-    getUsers: () => JSON.parse(localStorage.getItem('edu_users')) || [
-        { id: 1, name: 'Owner Admin', email: 'admin@elite.com', password: 'admin', role: 'admin', progress: {} }
-    ],
-    saveUsers: (u) => localStorage.setItem('edu_users', JSON.stringify(u)),
-    getModules: () => JSON.parse(localStorage.getItem('edu_modules')) || [
-        {
-            id: 1,
-            title: 'Month 1: Introduction to Mastery',
-            lectures: [
-                {
-                    id: 101,
-                    title: 'The Elite Mindset',
-                    thumbnail: 'https://img.freepik.com/free-vector/gradient-techno-background_23-2148911524.jpg',
-                    videos: [{ id: 1001, title: 'Session 1', url: 'https://www.youtube.com/watch?v=zOjov-2OZ0E' }],
-                    pdf: '',
-                    quiz: { passScore: 50, questions: [{ q: 'What is elite?', a: ['Mindset', 'Money', 'Car'], correct: 0 }] }
-                }
-            ]
+    getUsers: () => {
+        const saved = localStorage.getItem('edu_users');
+        const defaultAdmin = [{ id: 1, name: 'Owner Admin', email: 'admin@elite.com', password: 'admin', role: 'admin', progress: {} }];
+        if (!saved) return defaultAdmin;
+        try {
+            const parsed = JSON.parse(saved);
+            return (Array.isArray(parsed) && parsed.length > 0) ? parsed : defaultAdmin;
+        } catch (e) {
+            return defaultAdmin;
         }
-    ],
+    },
+    saveUsers: (u) => localStorage.setItem('edu_users', JSON.stringify(u)),
+    getModules: () => {
+        const saved = localStorage.getItem('edu_modules');
+        const defaultModules = [
+            {
+                id: 1,
+                title: 'Month 1: Introduction to Mastery',
+                lectures: [
+                    {
+                        id: 101,
+                        title: 'The Elite Mindset',
+                        thumbnail: 'https://img.freepik.com/free-vector/gradient-techno-background_23-2148911524.jpg',
+                        videos: [{ id: 1001, title: 'Session 1', url: 'https://www.youtube.com/watch?v=zOjov-2OZ0E' }],
+                        pdf: '',
+                        quiz: { passScore: 50, questions: [{ q: 'What is elite?', a: ['Mindset', 'Money', 'Car'], correct: 0 }] }
+                    }
+                ]
+            }
+        ];
+        if (!saved) return defaultModules;
+        try {
+            const parsed = JSON.parse(saved);
+            return (Array.isArray(parsed) && parsed.length > 0) ? parsed : defaultModules;
+        } catch (e) {
+            return defaultModules;
+        }
+    },
     saveModules: (m) => localStorage.setItem('edu_modules', JSON.stringify(m)),
     init: () => {
-        if (!localStorage.getItem('edu_users')) db.saveUsers(db.getUsers());
-        if (!localStorage.getItem('edu_modules')) db.saveModules(db.getModules());
+        // Ensure data is initialized in localStorage if empty
+        if (!localStorage.getItem('edu_users')) {
+            db.saveUsers(db.getUsers());
+        }
+        if (!localStorage.getItem('edu_modules')) {
+            db.saveModules(db.getModules());
+        }
+
+        // Safety check: ensure at least one admin exists with the correct credentials
+        let users = db.getUsers();
+        let adminUser = users.find(u => u.email.toLowerCase() === 'admin@elite.com');
+
+        if (!adminUser) {
+            // Admin doesn't exist, add it
+            users.push({ id: 1, name: 'Owner Admin', email: 'admin@elite.com', password: 'admin', role: 'admin', progress: {} });
+            db.saveUsers(users);
+        } else {
+            // Admin exists, ensure password is 'admin' and role is 'admin' for safety
+            let changed = false;
+            if (adminUser.password !== 'admin') { adminUser.password = 'admin'; changed = true; }
+            if (adminUser.role !== 'admin') { adminUser.role = 'admin'; changed = true; }
+            if (changed) db.saveUsers(users);
+        }
+    },
+    resetSystem: () => {
+        localStorage.removeItem('edu_users');
+        localStorage.removeItem('edu_modules');
+        sessionStorage.clear();
+        location.reload();
     }
 };
 
@@ -104,14 +149,30 @@ function formatDriveImage(url) {
 const auth = {
     handleLogin: (e) => {
         e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const pass = document.getElementById('login-password').value;
-        const user = db.getUsers().find(u => u.email === email && u.password === pass);
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-password').value.trim();
+
+        console.log("Attempting login for:", email);
+        const users = db.getUsers();
+        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === pass);
+
         if (user) {
-            state.currentUser = user; sessionStorage.setItem('current_user', JSON.stringify(user));
-            auth.updateUI(); router.navigate(user.role === 'admin' ? 'admin' : 'dashboard');
+            console.log("Login successful for:", user.name);
+            state.currentUser = user;
+            sessionStorage.setItem('current_user', JSON.stringify(user));
+            auth.updateUI();
+            router.navigate(user.role === 'admin' ? 'admin' : 'dashboard');
             showToast('Authorization Successful', 'success');
-        } else showToast('Invalid Credentials', 'danger');
+        } else {
+            console.warn("Login failed. Current users in DB:", users.length);
+            // Check if any admin exists at all
+            const hasAdmin = users.some(u => u.role === 'admin');
+            if (!hasAdmin) {
+                console.error("NO ADMIN FOUND. Initializing DB...");
+                db.init();
+            }
+            showToast('Invalid Credentials', 'danger');
+        }
     },
     handleRegister: (e) => {
         e.preventDefault();
