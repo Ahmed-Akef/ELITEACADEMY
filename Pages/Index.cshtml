@@ -1,0 +1,113 @@
+dotnet run@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Lessons";
+}
+
+@using System.Text.RegularExpressions
+
+@functions {
+    public string GetEmbedUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return url;
+        if (url.Contains("youtube.com") || url.Contains("youtu.be"))
+        {
+            var match = Regex.Match(url, @"(?:v=|v\/|embed\/|youtu.be\/|\/v\/|\/e\/|watch\?v=|\?v=)([^#\&\?]{11})");
+            if (match.Success) 
+            {
+                // modestbranding=1 removes the YouTube logo from the control bar
+                // rel=0 ensures related videos are from the same channel
+                // iv_load_policy=3 hides annotations
+                return $"https://www.youtube.com/embed/{match.Groups[1].Value}?modestbranding=1&rel=0&iv_load_policy=3&showinfo=0";
+            }
+        }
+        if (url.Contains("drive.google.com"))
+        {
+            var match = Regex.Match(url, @"/file/d/([^/]+)");
+            if (match.Success) return $"https://drive.google.com/file/d/{match.Groups[1].Value}/preview";
+        }
+        return url;
+    }
+}
+
+<div class="hero-section text-center py-5 mb-5 animate-up">
+    <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-4 py-2 border border-primary border-opacity-20 mb-3 fw-semibold">
+        Platform for Champions 🚀
+    </span>
+    <h1 class="display-3 fw-extrabold mb-4">
+        Master Your Skills with <br/>
+        <span class="text-gradient">EduStream Excellence</span>
+    </h1>
+    <p class="text-secondary fs-5 mx-auto" style="max-width: 600px;">
+        Access hand-picked professional lessons and elevate your career to the next level.
+    </p>
+</div>
+
+@if (!User.Identity?.IsAuthenticated == true)
+{
+    <div class="row justify-content-center py-5">
+        <div class="col-md-6 text-center">
+            <div class="glass-card p-5">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-4 mb-4">
+                    <i class="bi bi-shield-lock-fill text-primary fs-1"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Locked Content</h3>
+                <p class="text-secondary mb-4">Sign in to your student account to unlock all premium video lessons and resources.</p>
+                <a asp-page="/Auth/Login" class="btn btn-primary rounded-pill px-5 py-3 fw-bold">Login to Start Learning</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-end mb-4 animate-up">
+        <div>
+            <h2 class="fw-bold mb-0">Premium Library</h2>
+            <p class="text-secondary mb-0">Explore your @Model.Videos.Count specialized lessons</p>
+        </div>
+    </div>
+
+    <div class="grid-layout animate-up">
+        @foreach (var video in Model.Videos)
+        {
+            <div class="glass-card h-100 p-0 border-0">
+                <div class="video-container m-2 position-relative overflow-hidden" style="border-radius: 1rem;">
+                    
+                    <!-- Safety Guards: Invisible transparent boxes to prevent clicking logos/popouts -->
+                    <div class="guard-top-right"></div> <!-- Blocks Google Drive Arrow -->
+                    <div class="guard-bottom-right"></div> <!-- Blocks YouTube Logo -->
+
+                    <div class="ratio ratio-16x9">
+                        <iframe src="@GetEmbedUrl(video.VideoUrl)" 
+                                title="@video.Title" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3">
+                            <i class="bi bi-play-circle-fill me-1"></i> Video
+                        </span>
+                        <span class="small text-muted opacity-50 ms-auto">@video.DateAdded.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <h4 class="h5 fw-bold text-white mb-3">@video.Title</h4>
+                    <p class="text-secondary small mb-0 line-clamp" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        @video.Description
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Videos.Any())
+        {
+            <div class="grid-item-full text-center py-5 text-muted bg-card rounded-4 border border-subtle">
+                <i class="bi bi-layers fs-1 d-block mb-3 opacity-10"></i>
+                <p class="fs-5">No videos courses found. Check back later!</p>
+            </div>
+        }
+    </div>
+}
+
+

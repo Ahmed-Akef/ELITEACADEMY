@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"
+                content="Elite Academy - The most advanced educational platform for professional learning. High-quality video streaming, interactive quizzes, and live Zoom sessions.">
+        <title>Elite Academy | Professional Mastery Platform</title>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap"
+                rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://meet.ffmuc.net/external_api.js"></script>
+</head>
+
+<body>
+        <div id="app" class="app-fade-in">
+                <!-- Navigation -->
+                <nav id="main-nav" class="hidden">
+                        <div class="container">
+                                <div class="logo">ELITE<span>ACADEMY</span></div>
+                                <ul class="nav-links">
+                                        <li id="nav-home" class="active"><a href="#"
+                                                        onclick="router.navigate('home')">Home</a></li>
+                                        <li id="nav-dashboard" class="user-only hidden"><a href="#"
+                                                        onclick="router.navigate('dashboard')">Learning Library</a></li>
+                                        <li id="nav-admin" class="admin-only hidden"><a href="#"
+                                                        onclick="router.navigate('admin')">Admin Hub</a></li>
+                                </ul>
+                                <div class="nav-auth">
+                                        <span id="user-display" class="hidden"
+                                                style="margin-right:20px; font-weight:800; color:var(--primary);"></span>
+                                        <button id="logout-btn" class="btn btn-outline btn-sm hidden"
+                                                onclick="auth.logout()">Sign Out</button>
+                                        <button id="login-nav-btn" class="btn btn-primary btn-sm"
+                                                onclick="router.navigate('login')">Sign In</button>
+                                </div>
+                        </div>
+                </nav>
+
+                <!-- Dynamic Content -->
+                <main id="content"></main>
+
+                <!-- Templates -->
+                <div id="templates" style="display: none;">
+
+                        <!-- Home -->
+                        <!-- Home -->
+                        <section id="tpl-home">
+                                <div class="hero">
+                                        <div class="container">
+                                                <div class="hero-content">
+                                                        <h1>Master Your <span>Future</span></h1>
+                                                        <p>Experience the next generation of education with our premium
+                                                                learning platform. 4K Video streaming, expert resources,
+                                                                and absolute flexibility.</p>
+                                                        <div class="hero-btns">
+                                                                <button class="btn btn-primary"
+                                                                        onclick="router.navigate('register')">Get
+                                                                        Started Now</button>
+                                                                <button class="btn btn-outline"
+                                                                        onclick="router.navigate('login')">View
+                                                                        Library</button>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- Features -->
+                                <section class="features-section">
+                                        <div class="container">
+                                                <div class="section-header">
+                                                        <span class="section-badge">WHY CHOOSE US</span>
+                                                        <h2 class="section-title">Reinventing Professional Education
+                                                        </h2>
+                                                        <p style="color:var(--text-dim); font-size:1.2rem;">Our platform
+                                                                combines cutting-edge technology with world-class
+                                                                curriculum to deliver an unmatched learning experience.
+                                                        </p>
+                                                </div>
+                                                <div class="features-grid">
+                                                        <div class="feature-card">
+                                                                <div class="feature-icon">💎</div>
+                                                                <h3>Premium Content</h3>
+                                                                <p>Access high-definition video lectures filmed in
+                                                                        professional studios with crystal clear audio
+                                                                        and visual aids.</p>
+                                                        </div>
+                                                        <div class="feature-card">
+                                                                <div class="feature-icon">🚀</div>
+                                                                <h3>Instant Access</h3>
+                                                                <p>Start learning immediately. No waiting user
+                                                                        approvals.
+                                                                        Our automated system gets you in instantly.</p>
+                                                        </div>
+                                                        <div class="feature-card">
+                                                                <div class="feature-icon">🛡️</div>
+                                                                <h3>Secure & Private</h3>
+                                                                <p>Your data and progress are protected with
+                                                                        enterprise-grade encryption and secure
+                                                                        authentication.</p>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </section>
+
+                                <!-- Stats -->
+                                <section class="stats-section">
+                                        <div class="container">
+                                                <div class="stats-grid">
+                                                        <div class="stat-item">
+                                                                <h3>50+</h3>
+                                                                <p>Video Modules</p>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                                <h3>10k+</h3>
+                                                                <p>Active Students</p>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                                <h3>24/7</h3>
+                                                                <p>System Uptime</p>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                                <h3>4.9</h3>
+                                                                <p>User Rating</p>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </section>
+
+                                <!-- Footer -->
+                                <footer>
+                                        <div class="container">
+                                                <div class="footer-grid">
+                                                        <div class="footer-brand">
+                                                                <h2>ELITE ACADEMY</h2>
+                                                                <p>Empowering the next generation of leaders through
+                                                                        accessible, high-quality, and interactive
+                                                                        digital education.</p>
+                                                        </div>
+                                                        <div class="footer-links">
+                                                                <h4>Platform</h4>
+                                                                <ul>
+                                                                        <li><a href="#"
+                                                                                        onclick="router.navigate('home')">Home</a>
+                                                                        </li>
+                                                                        <li><a href="#"
+                                                                                        onclick="router.navigate('login')">Login</a>
+                                                                        </li>
+                                                                        <li><a href="#"
+                                                                                        onclick="router.navigate('register')">Register</a>
+                                                                        </li>
+                                                                </ul>
+                                                        </div>
+                                                        <div class="footer-links">
+                                                                <h4>Resources</h4>
+                                                                <ul>
+                                                                        <li><a href="#">Support Center</a></li>
+                                                                        <li><a href="#">System Status</a></li>
+                                                                        <li><a href="#">Terms of Service</a></li>
+                                                                </ul>
+                                                        </div>
+                                                        <div class="footer-links">
+                                                                <h4>Connect</h4>
+                                                                <ul>
+                                                                        <li><a href="#">Twitter</a></li>
+                                                                        <li><a href="#">LinkedIn</a></li>
+                                                                        <li><a href="#">Instagram</a></li>
+                                                                </ul>
+                                                        </div>
+                                                </div>
+                                                <div class="footer-bottom">
+                                                        <p>&copy; 2026 Elite Academy. All rights reserved.</p>
+                                                </div>
+                                        </div>
+                                </footer>
+                        </section>
+
+                        <!-- Login -->
+                        <section id="tpl-login"
+                                style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding-top:100px; width:100%;">
+                                <div class="auth-card">
+                                        <h2 style="font-size:2rem; margin-bottom:10px;">Welcome Back</h2>
+                                        <p style="color:var(--text-dim); margin-bottom:30px;">Continue your professional
+                                                journey.</p>
+                                        <form onsubmit="auth.handleLogin(event)">
+                                                <div class="form-group" style="margin-bottom:20px;">
+                                                        <label>Email Address</label>
+                                                        <input type="email" id="login-email" required
+                                                                placeholder="ُEnter your email">
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:30px;">
+                                                        <label>Password</label>
+                                                        <input type="password" id="login-password" required
+                                                                placeholder="Enter your password">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary"
+                                                        style="width:100%">Authenticate</button>
+                                                <p style="margin-top:25px; text-align:center; color:var(--text-dim);">
+                                                        New member? <a href="#" onclick="router.navigate('register')"
+                                                                style="color:var(--primary); font-weight:700;">Create
+                                                                Account</a></p>
+                                        </form>
+                                </div>
+                        </section>
+
+                        <!-- Register -->
+                        <section id="tpl-register"
+                                style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding-top:100px; width:100%;">
+                                <div class="auth-card">
+                                        <h2 style="font-size:2rem; margin-bottom:10px;">Register</h2>
+                                        <form onsubmit="auth.handleRegister(event)">
+                                                <div class="form-group" style="margin-bottom:20px;">
+                                                        <label>Full Name</label>
+                                                        <input type="text" id="reg-name" required
+                                                                placeholder="Enter your name">
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:20px;">
+                                                        <label>Email Address</label>
+                                                        <input type="email" id="reg-email" required
+                                                                placeholder="Enter your email">
+                                                </div>
+                                                <div class="form-group" style="margin-bottom:30px;">
+                                                        <label>Password</label>
+                                                        <input type="password" id="reg-password" required
+                                                                placeholder="Enter your password">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary"
+                                                        style="width:100%">Register Account</button>
+                                        </form>
+                                </div>
+                        </section>
+
+                        <!-- Student Dashboard -->
+                        <section id="tpl-dashboard">
+                                <div class="container" style="padding-top:140px;">
+                                        <div class="dashboard-header" style="margin-bottom:60px;">
+                                                <h1 style="font-size:3.5rem; font-weight:900;">Hello, <span
+                                                                id="student-name">Scholar</span></h1>
+                                                <p style="font-size:1.2rem; color:var(--text-dim);">Pick up where you
+                                                        left off. Your curriculum is waiting.</p>
+                                        </div>
+                                        <div id="module-list"></div>
+                                </div>
+                        </section>
+
+                        <!-- Admin Hub -->
+                        <section id="tpl-admin">
+                                <div class="container" style="padding-top:120px;">
+                                        <div class="admin-container">
+                                                <aside class="admin-sidebar">
+                                                        <h2
+                                                                style="font-size:1.5rem; margin-bottom:30px; letter-spacing:2px; color:var(--primary);">
+                                                                MANAGEMENT</h2>
+                                                        <ul>
+                                                                <li><a href="#" class="admin-tab-link active"
+                                                                                id="tab-link-content"
+                                                                                onclick="admin.showTab('content')">📚
+                                                                                Course Content</a></li>
+                                                                <li><a href="#" class="admin-tab-link"
+                                                                                id="tab-link-users"
+                                                                                onclick="admin.showTab('users')">👥
+                                                                                Student Access</a></li>
+                                                        </ul>
+                                                </aside>
+
+                                                <section class="admin-main">
+                                                        <!-- Content Tab -->
+                                                        <div id="admin-tab-content" class="admin-tab-content">
+                                                                <div
+                                                                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+                                                                        <h2 style="font-size:2rem;">Course Curriculum
+                                                                        </h2>
+                                                                        <button class="btn btn-primary"
+                                                                                onclick="admin.openModuleModal()">+ New
+                                                                                Module</button>
+                                                                </div>
+                                                                <div id="admin-module-list"></div>
+                                                        </div>
+
+                                                        <!-- Users Tab -->
+                                                        <div id="admin-tab-users" class="admin-tab-content hidden">
+                                                                <h2 style="font-size:2rem; margin-bottom:40px;">
+                                                                        Registered Scholars</h2>
+                                                                <div id="admin-user-list"></div>
+                                                        </div>
+                                                </section>
+                                        </div>
+                                </div>
+                        </section>
+                </div>
+
+                <!-- Modals -->
+                <div id="player-modal" class="modal"></div>
+
+                <div id="global-modal" class="modal">
+                        <div class="auth-card modal-content">
+                                <button class="close-modal" onclick="admin.closeModal()">&times;</button>
+                                <h2 id="modal-title"
+                                        style="margin-bottom:30px; color:var(--primary); font-size: 1.8rem; padding-right: 40px;">
+                                        Action</h2>
+                                <div id="modal-body"></div>
+                        </div>
+                </div>
+        </div>
+
+        <script src="app.js"></script>
+        <style>
+                @keyframes pulse {
+                        0% {
+                                opacity: 0.5;
+                                transform: scale(0.95);
+                        }
+
+                        50% {
+                                opacity: 1;
+                                transform: scale(1);
+                        }
+
+                        100% {
+                                opacity: 0.5;
+                                transform: scale(0.95);
+                        }
+                }
+        </style>
+</body>
+
+</html>
